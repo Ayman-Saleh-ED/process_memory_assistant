@@ -6,6 +6,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import NearestNeighbors
 
+from pathlib import Path
+
+DATA_PATH = Path(__file__).parent / "data" / "dataset.csv"
 WINDOW = 20      # samples per window (20 x 3 min = 1 hour)
 STEP = 10        # move the window by 10 samples
 ONSET = 20       # faults start after sample 20
@@ -53,7 +56,7 @@ def nice(name):
 
 @st.cache_resource
 def load_everything():
-    df = pd.read_csv("data/dataset.csv")
+    df = pd.read_csv(DATA_PATH)
     sensors = [c for c in df.columns if c.startswith("x")]
     t = np.arange(WINDOW)
 

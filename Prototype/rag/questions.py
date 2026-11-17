@@ -1,0 +1,36 @@
+# (question, document or None for any, regex that must appear on a correct page)
+IN_SCOPE = [
+ ("How do I set the friction clutch on the SIPART PS2 positioner?", "siemens_sipart_ps2", r"friction clutch"),
+ ("What supply pressure does the DVC6200 digital valve controller need?", "fisher_dvc6200", r"supply pressure"),
+ ("What is deadband in a control valve and how does it affect performance?", "control_valve_handbook", r"deadband"),
+ ("Why does a control loop oscillate because of the valve?", None, r"oscillat"),
+ ("What is hysteresis in a control valve?", "aiche_cep_loop", r"hysteresis"),
+ ("How does valve stiction or sticking show up in a loop?", None, r"stiction|sticking|sticks"),
+ ("How do I run a valve signature diagnostic on the DVC6200?", "fisher_dvc6200", r"valve signature|step response|diagnostic"),
+ ("How do I perform a zero trim on the Rosemount 3051?", "rosemount_3051", r"zero trim"),
+ ("What is the sensor drift alert on the Rosemount 3144P?", "rosemount_3144p", r"sensor drift alert"),
+ ("What does an open sensor condition mean on the temperature transmitter?", "rosemount_3144p", r"open sensor"),
+ ("How does the Rosemount 8700M detect an empty pipe?", "rosemount_8700m", r"empty pipe"),
+ ("How should the magnetic flowmeter be grounded?", "rosemount_8700m", r"ground"),
+ ("How do I reduce noise on the 3051 output with damping?", "rosemount_3051", r"damping"),
+ ("How do I trim or calibrate the sensor input on the 3144P?", "rosemount_3144p", r"sensor trim"),
+ ("What alerts does the DVC6200 give when supply pressure is low?", "fisher_dvc6200", r"supply pressure (alert|low)|low supply pressure"),
+ ("How do I troubleshoot a SIPART PS2 that does not reach the setpoint?", "siemens_sipart_ps2", r"troubleshooting"),
+ ("What are the alarm and saturation output levels of the 3051?", "rosemount_3051", r"saturation"),
+ ("How do I wire a 4-wire RTD to the 3144P?", "rosemount_3144p", r"4-wire|four-wire"),
+ ("How do I check the coil circuit and electrodes on the 8700M?", "rosemount_8700m", r"coil circuit"),
+ ("How can I tell if a loop oscillates from bad tuning or from the valve?", None, r"deadband|stiction|sticks|sticking|limit cycle"),
+ ("What are fail-open and fail-closed actions for a control valve?", "control_valve_handbook", r"fail-closed|fail closed"),
+ ("What does a valve positioner do?", "control_valve_handbook", r"positioner"),
+ ("How do I detect intermittent sensor readings on the 3144P?", "rosemount_3144p", r"intermittent"),
+ ("What is the travel deviation alert on the DVC6200?", "fisher_dvc6200", r"travel deviation"),
+]
+# questions the documents cannot answer
+OUT_OF_SCOPE = [
+ "How do I bake bread at home?",
+ "What is the best catalyst for the reactor reaction?",
+ "How do I repair a leaking heat exchanger tube bundle?",
+ "How do I reduce fouling in a cooling water system?",
+ "Which gas chromatograph should I buy for feed composition analysis?",
+ "Who won the football world cup?",
+]

@@ -1,0 +1,202 @@
+[
+ {
+  "fault": 1,
+  "name": "A/C feed ratio change (B composition constant)",
+  "kind": "Step",
+  "type": "process",
+  "coverage": "weak",
+  "check_first": "Feed flow transmitters and control valves on the A and C feeds; feed composition analyzer.",
+  "search": "flow transmitter reading feed flow control valve positioner",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 2,
+  "name": "B composition change (A/C ratio constant)",
+  "kind": "Step",
+  "type": "process",
+  "coverage": "weak",
+  "check_first": "Feed composition analyzer and the B feed line.",
+  "search": "analyzer reading composition feed flow transmitter",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 3,
+  "name": "D feed temperature change",
+  "kind": "Step",
+  "type": "process",
+  "coverage": "good",
+  "check_first": "D feed temperature transmitter and the feed heater / temperature loop.",
+  "search": "temperature transmitter sensor drift RTD reading",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 4,
+  "name": "Reactor cooling water inlet temperature change",
+  "kind": "Step",
+  "type": "process",
+  "coverage": "weak",
+  "check_first": "Cooling water supply temperature, reactor temperature transmitter, cooling water valve.",
+  "search": "temperature transmitter sensor drift cooling water valve positioner",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 5,
+  "name": "Condenser cooling water inlet temperature change",
+  "kind": "Step",
+  "type": "process",
+  "coverage": "weak",
+  "check_first": "Condenser cooling water supply temperature, condenser outlet temperature transmitter, cooling water valve.",
+  "search": "temperature transmitter sensor drift cooling water valve positioner",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 6,
+  "name": "A feed loss",
+  "kind": "Step",
+  "type": "process",
+  "coverage": "weak",
+  "check_first": "A feed flow transmitter, A feed valve and supply pressure.",
+  "search": "flow transmitter low flow control valve positioner supply pressure",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 7,
+  "name": "C header pressure loss (reduced availability)",
+  "kind": "Step",
+  "type": "process",
+  "coverage": "partial",
+  "check_first": "C feed supply pressure, C feed valve position and pressure transmitter.",
+  "search": "supply pressure loss valve positioner pressure transmitter",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 8,
+  "name": "A, B, C feed composition changes",
+  "kind": "Random",
+  "type": "process",
+  "coverage": "weak",
+  "check_first": "Feed composition analyzer and feed flow transmitters.",
+  "search": "analyzer reading composition process noise transmitter",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 9,
+  "name": "D feed temperature changes",
+  "kind": "Random",
+  "type": "process",
+  "coverage": "good",
+  "check_first": "D feed temperature transmitter and its temperature loop.",
+  "search": "temperature transmitter sensor drift RTD noise",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 10,
+  "name": "C feed temperature changes",
+  "kind": "Random",
+  "type": "process",
+  "coverage": "good",
+  "check_first": "C feed temperature transmitter and its temperature loop.",
+  "search": "temperature transmitter sensor drift RTD noise",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 11,
+  "name": "Reactor cooling water inlet temperature changes",
+  "kind": "Random",
+  "type": "process",
+  "coverage": "weak",
+  "check_first": "Cooling water supply temperature, reactor temperature loop, cooling water valve.",
+  "search": "temperature transmitter noise control loop oscillation valve",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 12,
+  "name": "Condenser cooling water inlet temperature changes",
+  "kind": "Random",
+  "type": "process",
+  "coverage": "weak",
+  "check_first": "Condenser cooling water supply temperature and the condenser temperature loop.",
+  "search": "temperature transmitter noise control loop oscillation valve",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 13,
+  "name": "Reaction kinetics drift",
+  "kind": "Slow drift",
+  "type": "process",
+  "coverage": "none",
+  "check_first": "Not covered by instrument manuals (reaction chemistry).",
+  "search": "",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 14,
+  "name": "Reactor cooling water valve sticking",
+  "kind": "Sticking",
+  "type": "instrument",
+  "coverage": "good",
+  "check_first": "Valve positioner, stem friction, controller output vs valve position (deadband, stiction).",
+  "search": "control valve sticking stiction deadband positioner friction",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 15,
+  "name": "Condenser cooling water valve sticking",
+  "kind": "Sticking",
+  "type": "instrument",
+  "coverage": "good",
+  "check_first": "Valve positioner, stem friction, controller output vs valve position (deadband, stiction).",
+  "search": "control valve sticking stiction deadband positioner friction",
+  "source": "Downs & Vogel (1993)"
+ },
+ {
+  "fault": 16,
+  "name": "Unknown fault (not described in the original paper)",
+  "kind": "Unknown",
+  "type": "unknown",
+  "coverage": "none",
+  "check_first": "Unconfirmed. The original description lists this fault as unknown.",
+  "search": "",
+  "source": "Downs & Vogel (1993); later papers report possible causes, unconfirmed"
+ },
+ {
+  "fault": 17,
+  "name": "Unknown fault (not described in the original paper)",
+  "kind": "Unknown",
+  "type": "unknown",
+  "coverage": "none",
+  "check_first": "Unconfirmed. The original description lists this fault as unknown.",
+  "search": "",
+  "source": "Downs & Vogel (1993); later papers report possible causes, unconfirmed"
+ },
+ {
+  "fault": 18,
+  "name": "Unknown fault (not described in the original paper)",
+  "kind": "Unknown",
+  "type": "unknown",
+  "coverage": "none",
+  "check_first": "Unconfirmed. The original description lists this fault as unknown.",
+  "search": "",
+  "source": "Downs & Vogel (1993); later papers report possible causes, unconfirmed"
+ },
+ {
+  "fault": 19,
+  "name": "Unknown fault (not described in the original paper)",
+  "kind": "Unknown",
+  "type": "unknown",
+  "coverage": "none",
+  "check_first": "Unconfirmed. The original description lists this fault as unknown.",
+  "search": "",
+  "source": "Downs & Vogel (1993); later papers report possible causes, unconfirmed"
+ },
+ {
+  "fault": 20,
+  "name": "Unknown fault (not described in the original paper)",
+  "kind": "Unknown",
+  "type": "unknown",
+  "coverage": "none",
+  "check_first": "Unconfirmed. The original description lists this fault as unknown.",
+  "search": "",
+  "source": "Downs & Vogel (1993); later papers report possible causes, unconfirmed"
+ }
+]

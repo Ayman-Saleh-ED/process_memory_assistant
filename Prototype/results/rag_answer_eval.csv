@@ -1,0 +1,31 @@
+kind,question,points_kept,points_dropped,share_on_a_correct_page,model
+in scope,How do I set the friction clutch on the SIPART PS2 positioner?,4,0,1.0,openai/gpt-oss-120b
+in scope,What supply pressure does the DVC6200 digital valve controller need?,2,0,1.0,openai/gpt-oss-120b
+in scope,What is deadband in a control valve and how does it affect performance?,3,1,0.6666666666666666,openai/gpt-oss-120b
+in scope,Why does a control loop oscillate because of the valve?,3,0,1.0,openai/gpt-oss-120b
+in scope,What is hysteresis in a control valve?,3,0,0.6666666666666666,openai/gpt-oss-120b
+in scope,How does valve stiction or sticking show up in a loop?,4,0,1.0,openai/gpt-oss-120b
+in scope,How do I run a valve signature diagnostic on the DVC6200?,3,1,0.3333333333333333,openai/gpt-oss-120b
+in scope,How do I perform a zero trim on the Rosemount 3051?,4,0,1.0,openai/gpt-oss-120b
+in scope,What is the sensor drift alert on the Rosemount 3144P?,1,1,1.0,openai/gpt-oss-120b
+in scope,What does an open sensor condition mean on the temperature transmitter?,2,0,1.0,openai/gpt-oss-120b
+in scope,How does the Rosemount 8700M detect an empty pipe?,0,0,,openai/gpt-oss-120b
+in scope,How should the magnetic flowmeter be grounded?,1,0,1.0,openai/gpt-oss-120b
+in scope,How do I reduce noise on the 3051 output with damping?,3,0,0.3333333333333333,openai/gpt-oss-120b
+in scope,How do I trim or calibrate the sensor input on the 3144P?,4,0,0.75,openai/gpt-oss-120b
+in scope,What alerts does the DVC6200 give when supply pressure is low?,2,0,0.5,openai/gpt-oss-120b
+in scope,How do I troubleshoot a SIPART PS2 that does not reach the setpoint?,4,0,0.75,openai/gpt-oss-120b
+in scope,What are the alarm and saturation output levels of the 3051?,1,0,1.0,openai/gpt-oss-120b
+in scope,How do I wire a 4-wire RTD to the 3144P?,2,0,1.0,openai/gpt-oss-120b
+in scope,How do I check the coil circuit and electrodes on the 8700M?,4,0,0.75,openai/gpt-oss-120b
+in scope,How can I tell if a loop oscillates from bad tuning or from the valve?,3,0,0.6666666666666666,openai/gpt-oss-120b
+in scope,What are fail-open and fail-closed actions for a control valve?,2,0,1.0,openai/gpt-oss-120b
+in scope,What does a valve positioner do?,3,0,0.3333333333333333,openai/gpt-oss-120b
+in scope,How do I detect intermittent sensor readings on the 3144P?,0,0,,openai/gpt-oss-20b
+in scope,What is the travel deviation alert on the DVC6200?,0,0,,openai/gpt-oss-20b
+out of scope,How do I bake bread at home?,0,0,,openai/gpt-oss-120b
+out of scope,What is the best catalyst for the reactor reaction?,0,0,,openai/gpt-oss-20b
+out of scope,How do I repair a leaking heat exchanger tube bundle?,0,0,,openai/gpt-oss-20b
+out of scope,How do I reduce fouling in a cooling water system?,0,0,,openai/gpt-oss-20b
+out of scope,Which gas chromatograph should I buy for feed composition analysis?,0,0,,openai/gpt-oss-20b
+out of scope,Who won the football world cup?,0,0,,openai/gpt-oss-20b

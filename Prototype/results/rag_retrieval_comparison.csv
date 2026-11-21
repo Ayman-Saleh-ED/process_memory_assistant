@@ -1,0 +1,4 @@
+search,top1,top3,top5,questions
+keyword,0.583,0.792,0.875,24
+semantic,0.625,0.875,0.917,24
+hybrid,0.75,0.917,0.958,24

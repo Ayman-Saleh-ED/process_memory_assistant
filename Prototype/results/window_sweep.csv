@@ -1,0 +1,11 @@
+model,window,step,features,n_features,val_macro_f1,test_accuracy,test_macro_f1,normal_recall,median_delay_min,runs_flagged,seconds
+gradient boosting,20,10,basic,156,0.9582,0.9631,0.9631,0.9752,60.0,1.0,168
+neural network (MLP),20,10,basic,156,0.9839,0.9845,0.987,0.9807,60.0,1.0,113
+gradient boosting,20,10,extended,312,0.954,0.9564,0.9545,0.9761,60.0,1.0,262
+gradient boosting,10,5,basic,156,0.9692,0.9716,0.9741,0.9787,30.0,1.0,254
+gradient boosting,10,5,extended,312,0.9656,0.969,0.9711,0.9781,30.0,1.0,412
+gradient boosting,40,20,basic,156,0.987,0.99,0.9914,0.9949,120.0,1.0,130
+gradient boosting,40,20,extended,312,0.9881,0.991,0.9922,0.9959,120.0,1.0,195
+gradient boosting,60,30,basic,156,0.9934,0.9929,0.993,0.9957,240.0,1.0,81
+gradient boosting,60,30,extended,312,0.9937,0.9946,0.9947,0.9966,240.0,1.0,144
+gradient boosting,20,5,basic,156,0.9713,0.9741,0.9751,0.9786,60.0,1.0,260

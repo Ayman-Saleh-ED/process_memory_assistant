@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import streamlit as st
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
@@ -93,7 +95,12 @@ def label(fault):
 
 @st.cache_resource
 def load_retriever():
-    return Retriever(HERE / "rag" / "chunks.json")
+    """Hybrid (keyword + semantic) search if its files and package are there, else keyword search only."""
+    try:
+        from rag.hybrid import HybridRetriever
+        return HybridRetriever(HERE / "rag" / "chunks.json", HERE / "rag" / "page_embeddings.npz")
+    except Exception:
+        return Retriever(HERE / "rag" / "chunks.json")
 
 
 def window_features(w):
@@ -140,7 +147,9 @@ st.sidebar.markdown(
 
 # ---- input ----
 cases = runs[["faultNumber", "simulationRun"]].drop_duplicates().sample(frac=1, random_state=0).reset_index(drop=True)
-choice = st.selectbox("New run to check", range(len(cases)), format_func=lambda i: f"Test case {i + 1}")
+show_labels = st.sidebar.checkbox("Show test case labels (gives the answer away)")
+choice = st.selectbox("New run to check", range(len(cases)), format_func=lambda i: (
+    f"Test case {i + 1}: {label(int(cases.faultNumber[i]))}" if show_labels else f"Test case {i + 1}"))
 fault, run = int(cases.faultNumber[choice]), int(cases.simulationRun[choice])
 this_run = runs[(runs.faultNumber == fault) & (runs.simulationRun == run)].sort_values("sample").reset_index(drop=True)
 starts = list(range(0, len(this_run) - WINDOW + 1, STEP))
@@ -161,7 +170,10 @@ else:
 proba = model.predict_proba(x)[0]
 best = int(model.classes_[proba.argmax()])
 st.subheader("Prediction")
-st.metric("Predicted state", label(best), f"{proba.max():.0%} confident")
+if best != 0:
+    st.error(f"ALARM: {label(best)} ({proba.max():.0%} confident)")
+else:
+    st.success(f"Normal operation ({proba.max():.0%} confident)")
 if st.checkbox("Show the real answer"):
     if actual is None:
         st.write(f"Real state: **the fault starts inside this window** ({label(fault)})")
@@ -180,22 +192,30 @@ similar["state"] = similar.fault.map(FAULT_NAMES)
 similar["similarity"] = (1 - dist[0]).round(3)
 st.dataframe(similar[["state", "run", "start", "similarity"]], hide_index=True)
 
-# ---- what moved ----
-st.subheader("What moved the most")
+# ---- what deviates most ----
+st.subheader("Variables that deviate most from normal")
 window = this_run.iloc[start:start + WINDOW]
-z = ((window[sensors].mean() - normal_mean[sensors]) / normal_std[sensors]).abs().sort_values(ascending=False)
+z_signed = (window[sensors].mean() - normal_mean[sensors]) / normal_std[sensors]
+z = z_signed.abs().sort_values(ascending=False)
 top = z.head(3).index.tolist()
-fig, ax = plt.subplots(1, 3, figsize=(11, 3))
+st.write(f"**{int((z > 3).sum())} of {len(z)} variables** are more than 3 standard deviations away from their normal average in this window.")
+fig, ax = plt.subplots(1, 3, figsize=(11, 3.4))
 for a, name in zip(ax, top):
-    a.plot(this_run["sample"], this_run[name], linewidth=0.8)
+    a.plot(this_run["sample"], this_run[name], linewidth=0.8, color="tab:blue")
     a.axvspan(window["sample"].iloc[0], window["sample"].iloc[-1], color="orange", alpha=0.4)
     a.axhline(normal_mean[name], color="gray", linestyle="--")
     if fault != 0:
         a.axvline(ONSET, color="red", linestyle=":")
-    a.set_title(nice(name), fontsize=9)
-    a.set_xlabel("sample")
+    a.set_title(f"{nice(name)}\n{z_signed[name]:+.1f} std from normal", fontsize=9)
+    a.set_xlabel("sample (1 sample = 3 min)")
+handles = [Line2D([0], [0], color="tab:blue", linewidth=1), Patch(color="orange", alpha=0.4),
+           Line2D([0], [0], color="gray", linestyle="--"), Line2D([0], [0], color="red", linestyle=":")]
+fig.legend(handles, ["sensor reading", "chosen 1-hour window", "normal average", "fault start (real)"],
+           loc="lower center", ncol=4, fontsize=9, frameon=False)
+fig.tight_layout(rect=(0, 0.1, 1, 1))
 st.pyplot(fig)
-st.caption("Orange = the chosen window. Dashed line = average in normal operation. Red dotted line = where the fault starts.")
+st.caption("These show where the plant moved, not proof of the root cause: control loops spread a fault through many variables, "
+           "so a cause and its effects move together.")
 
 # ---- what to check ----
 st.subheader("What to check")
@@ -214,7 +234,7 @@ if best != 0:
         st.warning("The manuals only partly cover this fault, so read the pages with care.")
     if row["coverage"] != "none":
         query = row["search"]   # variable names in the query pulled in unrelated pages, so they only go to the LLM
-        situation = (f"Detected fault: {row['name']}. Variables that changed most: {moved}. "
+        situation = (f"Detected fault: {row['name']}. Variables that deviate most from normal (symptoms, not proven causes): {moved}. "
                      "Question: what should the operator check first?")
 elif not user_question:
     st.info("Nothing abnormal found.")
@@ -224,8 +244,11 @@ if user_question:
     situation = "Question: " + user_question
 
 if query:
-    sources = load_retriever().search(query, k=5)
+    retriever = load_retriever()
+    sources = retriever.search(query, k=5)
+    used = getattr(retriever, "last_mode", "keyword")
     st.write("**Manual pages found:**")
+    st.caption("Search: keyword + semantic (hybrid)" if used == "hybrid" else "Search: keyword only")
     for i, r in enumerate(sources, start=1):
         where = f"{r['title']}, {r['section']}, page {r['page']}" if r["section"] else f"{r['title']}, page {r['page']}"
         with st.expander(f"[{i}] {where}  (match {r['score']:.2f})"):

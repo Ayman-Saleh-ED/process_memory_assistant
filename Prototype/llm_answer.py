@@ -6,12 +6,13 @@ that source. Points whose quote can not be found are removed.
 """
 import json
 import re
+import time
 
 import requests
 
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 # Tried in order. Groq changes its model list, so the first working one is used.
-MODELS = ["openai/gpt-oss-120b", "llama-3.3-70b-versatile", "openai/gpt-oss-20b", "llama-3.1-8b-instant"]
+MODELS = ["openai/gpt-oss-120b", "llama-3.3-70b-versatile", "openai/gpt-oss-20b"]
 
 SYSTEM = """You help plant operators troubleshoot instruments and valves.
 Use ONLY the numbered sources you are given. Do not use any other knowledge.
@@ -31,25 +32,35 @@ def build_messages(situation, sources):
     return [{"role": "system", "content": SYSTEM}, {"role": "user", "content": user}]
 
 
-def ask_groq(api_key, messages, preferred=None):
-    """Call Groq. Returns (reply_text, model_used)."""
+def ask_groq(api_key, messages, preferred=None, retries=3):
+    """Call Groq. Returns (reply_text, model_used).
+    A rate limit (HTTP 429) is waited out and retried; a missing model (404) or any other error moves on to the next model."""
     models = ([preferred] if preferred else []) + [m for m in MODELS if m != preferred]
-    last_error = "no model tried"
+    errors = []
     for model in models:
-        try:
-            r = requests.post(
-                GROQ_URL,
-                headers={"Authorization": f"Bearer {api_key}"},
-                json={"model": model, "messages": messages, "temperature": 0, "max_tokens": 2000},
-                timeout=60,
-            )
-        except requests.RequestException as e:
-            last_error = str(e)
-            continue
-        if r.status_code == 200:
-            return r.json()["choices"][0]["message"]["content"], model
-        last_error = f"{model}: HTTP {r.status_code} {r.text[:200]}"
-    raise RuntimeError(last_error)
+        for attempt in range(retries):
+            try:
+                r = requests.post(
+                    GROQ_URL,
+                    headers={"Authorization": f"Bearer {api_key}"},
+                    json={"model": model, "messages": messages, "temperature": 0, "max_tokens": 2000},
+                    timeout=60,
+                )
+            except requests.RequestException as e:
+                errors.append(f"{model}: {e}")
+                break
+            if r.status_code == 200:
+                return r.json()["choices"][0]["message"]["content"], model
+            if r.status_code == 429 and attempt < retries - 1:
+                try:
+                    wait = float(r.headers.get("retry-after") or 0)
+                except ValueError:
+                    wait = 0
+                time.sleep(min(wait or 15 * (attempt + 1), 60))
+                continue
+            errors.append(f"{model}: HTTP {r.status_code} {r.text[:120]}")
+            break
+    raise RuntimeError(" | ".join(errors) or "no model tried")
 
 
 def squash(text):

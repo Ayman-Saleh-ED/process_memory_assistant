@@ -45,14 +45,15 @@ def main(mode):
     for c in chunks:
         pages[(c["doc"], c["page"])] = pages.get((c["doc"], c["page"]), "") + " " + c["text"]
 
-    rows = []
+    rows, failed = [], []
     questions = [(q, doc, rx, "in scope") for q, doc, rx in IN_SCOPE] + [(q, None, None, "out of scope") for q in OUT_OF_SCOPE]
     for q, doc, rx, kind in questions:
         sources = retriever.search(q, k=5)
         try:
             res = answer(key, "Question: " + q, sources)
         except Exception as e:
-            print("failed:", q, e)
+            print("FAILED:", q, "|", str(e)[:300])
+            failed.append(q)
             continue
         on_gold = None
         if rx and res["points"]:
@@ -60,13 +61,15 @@ def main(mode):
             on_gold = sum((sources[p["source"] - 1]["doc"], sources[p["source"] - 1]["page"]) in gold for p in res["points"]) / len(res["points"])
         rows.append({"kind": kind, "question": q, "points_kept": len(res["points"]), "points_dropped": res["dropped"],
                      "share_on_a_correct_page": on_gold, "model": res["model"]})
-        print(f"{kind:13} kept {len(res['points'])} dropped {res['dropped']}  {q}", flush=True)
-        time.sleep(2)
+        print(f"{kind:13} kept {len(res['points'])} dropped {res['dropped']}  ({res['model']})  {q}", flush=True)
+        time.sleep(20)      # the free Groq plan limits tokens per minute; each request is a few thousand tokens
 
     df = pd.DataFrame(rows)
     inn, out = df[df.kind == "in scope"], df[df.kind == "out of scope"]
     kept, dropped = inn.points_kept.sum(), inn.points_dropped.sum()
     print("\n--- summary (search: %s) ---" % mode)
+    if failed:
+        print(f"WARNING: {len(failed)} of {len(questions)} questions FAILED to get any reply, so these numbers are partial. Wait a few minutes and run again.")
     print(f"In-scope questions: {len(inn)}")
     print(f"  got an answer (at least 1 verified point): {(inn.points_kept > 0).mean():.0%}")
     print(f"  points that passed the quote check: {kept}/{kept + dropped} = {kept / max(kept + dropped, 1):.0%}")
